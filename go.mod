@@ -1,6 +1,6 @@
 module github.com/intelchain-itc/go-sdk
 
-go 1.19
+go 1.22.5
 
 require (
 	github.com/btcsuite/btcd v0.22.1
