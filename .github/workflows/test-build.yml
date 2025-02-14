@@ -100,13 +100,14 @@ jobs:
           # ls -l /usr/local/opt/openssl
           # echo "Brew Installed OpenSSL Version:"
           # openssl version -a
-          make libs
+          # make libs
         working-directory: ${{ github.workspace }}/src/github.com/intelchain-itc/intelchain
 
       - name: Build itc binary for macos-latest x86_64
         if: matrix.os == 'macos-latest'
         run: |
-          make all
+          # make all
+          make static 
         working-directory: itc-sdk
 
       - name: Upload artifact for linux
