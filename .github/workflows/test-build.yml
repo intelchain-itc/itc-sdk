@@ -73,9 +73,9 @@ jobs:
       - name: Install Dependencies (Ubuntu)
         if: matrix.os == 'ubuntu-22.04'
         run: |
-          sudo apt-get update
-          sudo apt-get remove -y openssl libssl-dev
-          sudo apt-get install -y libssl1.1 libssl-dev g++ make
+           sudo apt-get update
+           sudo apt-get remove -y openssl libssl-dev
+           sudo apt-get install -y libssl1.1 libssl-dev g++ make ca-certificates
 
       - name: Build itc binary for linux ubuntu
         if: matrix.os == 'ubuntu-22.04'
@@ -86,14 +86,14 @@ jobs:
       - name: Build libs for macos-latest
         if: matrix.os == 'macos-latest'
         run: |
-          # brew install gmp
+          brew install gmp
           # brew install openssl
           # sudo mkdir -p /opt/homebrew/opt/
           # sudo ln -sf /usr/local/opt/openssl@3 /opt/homebrew/opt/openssl@3
           # echo "ls -l /opt/homebrew/opt/openssl@3"; ls -l /opt/homebrew/opt/openssl@3
 
           
-          brew uninstall openssl
+          brew uninstall openssl@3
           brew install openssl@1.1
           sudo mkdir -p /opt/homebrew/opt/
           sudo ln -sf /usr/local/opt/openssl@1.1 /opt/homebrew/opt/openssl@1.1
