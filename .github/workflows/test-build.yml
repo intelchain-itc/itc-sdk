@@ -101,7 +101,7 @@ jobs:
           # sudo ln -sf /usr/local/opt/openssl@1.1 /opt/homebrew/opt/openssl@1.1
           # echo "ls -l /opt/homebrew/opt/openssl@1.1"; ls -l /opt/homebrew/opt/openssl@1.1
           
-          make libs
+          # make libs
         working-directory: ${{ github.workspace }}/src/github.com/intelchain-itc/intelchain
 
       - name: Build itc binary for macos-latest x86_64
