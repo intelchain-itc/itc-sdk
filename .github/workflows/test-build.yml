@@ -43,8 +43,8 @@ jobs:
         with:
           repository: intelchain-itc/intelchain
           path: ${{ github.workspace }}/src/github.com/intelchain-itc/intelchain
-          ref: main
-          fetch-depth: 0
+          # ref: main
+          # fetch-depth: 0
           
 
       - name: Get latest version and release
