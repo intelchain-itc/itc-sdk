@@ -90,6 +90,8 @@ jobs:
           sudo mkdir -p /opt/homebrew/opt/
           sudo ln -sf /usr/local/opt/openssl@3 /opt/homebrew/opt/openssl@3
           echo "ls -l /opt/homebrew/opt/openssl@3"; ls -l /opt/homebrew/opt/openssl@3
+
+          
           # brew update
           # brew install gmp openssl@3
           # mkdir -p /usr/local/opt/openssl
@@ -100,14 +102,14 @@ jobs:
           # ls -l /usr/local/opt/openssl
           # echo "Brew Installed OpenSSL Version:"
           # openssl version -a
-          # make libs
+          make libs
         working-directory: ${{ github.workspace }}/src/github.com/intelchain-itc/intelchain
 
       - name: Build itc binary for macos-latest x86_64
         if: matrix.os == 'macos-latest'
         run: |
-          # make all
-          make static 
+           make all
+         
         working-directory: itc-sdk
 
       - name: Upload artifact for linux
