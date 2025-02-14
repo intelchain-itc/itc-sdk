@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout itc code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: itc-sdk
 
@@ -29,7 +29,7 @@ jobs:
           go-version-file: itc-sdk/go.mod
 
       - name: Checkout dependence repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: intelchain-itc/mcl
           path: ${{ github.workspace }}/src/github.com/intelchain-itc/mcl
@@ -41,7 +41,7 @@ jobs:
           path: ${{ github.workspace }}/src/github.com/intelchain-itc/bls
 
       - name: Checkout dependence code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: intelchain-itc/intelchain
           path: ${{ github.workspace }}/src/github.com/intelchain-itc/intelchain
@@ -89,7 +89,7 @@ jobs:
         working-directory: itc-sdk
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: itc
           path: ${{ github.workspace }}/itc-sdk/dist/*
@@ -126,7 +126,7 @@ jobs:
   #         GOPATH: /home/ubuntu/actions-runner/_work/itc-sdk/itc-sdk/go
 
   #     - name: Checkout dependence repo
-  #       uses: actions/checkout@v2
+  #       uses: actions/checkout@v4
   #       with:
   #         repository: intelchain-itc/mcl
   #         path: go/src/github.com/intelchain-itc/mcl
@@ -134,7 +134,7 @@ jobs:
   #         GOPATH: /home/ubuntu/actions-runner/_work/itc-sdk/itc-sdk/go
 
   #     - name: Checkout dependence repo
-  #       uses: actions/checkout@v2
+  #       uses: actions/checkout@v4
   #       with:
   #         repository: intelchain-itc/bls
   #         path: go/src/github.com/intelchain-itc/bls
@@ -181,7 +181,7 @@ jobs:
           passphrase: ${{ secrets.ITC_GPG_PRIVATE_KEY_PASS }}
 
       - name: Checkout itc core code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: itc-sdk
 
@@ -196,7 +196,7 @@ jobs:
         working-directory: itc-sdk
 
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: itc
 
@@ -218,7 +218,7 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: actions/create-release@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -229,7 +229,7 @@ jobs:
           body_path: ${{ github.workspace }}/itc-sdk/tag_message.md
 
       - name: Upload itc binary for Linux (x86_64)
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -239,7 +239,7 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Upload itc binary darwin-x86_64
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
