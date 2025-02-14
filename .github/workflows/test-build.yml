@@ -45,7 +45,7 @@ jobs:
           path: ${{ github.workspace }}/src/github.com/intelchain-itc/intelchain
           ref: main
           fetch-depth: 0
-          token: ${{ secrets.GH_PAT }}
+          
 
       - name: Get latest version and release
         run: |
