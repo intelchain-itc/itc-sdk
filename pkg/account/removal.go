@@ -5,8 +5,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/intelchain-itc/go-sdk/pkg/common"
-	"github.com/intelchain-itc/go-sdk/pkg/store"
+	"github.com/intelchain-itc/itc-sdk/pkg/common"
+	"github.com/intelchain-itc/itc-sdk/pkg/store"
 	"github.com/mitchellh/go-homedir"
 )
 

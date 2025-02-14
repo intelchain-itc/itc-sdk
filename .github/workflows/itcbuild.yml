@@ -1,0 +1,281 @@
+name: release itc
+
+on:
+  push:
+    tags:
+      - v*
+
+env:
+  GOPATH: ${{ github.workspace }}
+  GOBIN: ${{ github.workspace }}/bin
+
+jobs:
+  build-x86_64:
+    name: Build itc binary for x86_64
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04, macos-latest ]
+
+    steps:
+      - name: Checkout itc code
+        uses: actions/checkout@v3
+        with:
+          path: itc-sdk
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: itc-sdk/go.mod
+
+      - name: Checkout dependence repo
+        uses: actions/checkout@v3
+        with:
+          repository: intelchain-itc/mcl
+          path: ${{ github.workspace }}/src/github.com/intelchain-itc/mcl
+
+      - name: Checkout dependence repo
+        uses: actions/checkout@v3
+        with:
+          repository: intelchain-itc/bls
+          path: ${{ github.workspace }}/src/github.com/intelchain-itc/bls
+
+      - name: Checkout dependence code
+        uses: actions/checkout@v2
+        with:
+          repository: intelchain-itc/intelchain
+          path: ${{ github.workspace }}/src/github.com/intelchain-itc/intelchain
+          ref: main
+          fetch-depth: 0
+
+      - name: Get latest version and release
+        run: |
+          VERSION=$(git tag -l --sort=-v:refname | head -n 1 | tr -d v)
+          RELEASE=$(git describe --long | cut -f2 -d-)
+          echo "build_version=$VERSION" >> $GITHUB_ENV
+          echo "build_release=$RELEASE" >> $GITHUB_ENV
+        working-directory: itc-sdk
+
+      - name: Debug
+        run: |
+          pwd
+          echo ${HOME}
+          echo ${GITHUB_WORKSPACE}
+          echo ${GOPATH}
+          echo ${GOROOT}
+
+      - name: Build itc binary for Linux
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          make static
+        working-directory: itc-sdk
+
+      - name: Build libs for macos-latest
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install gmp
+          brew install openssl
+          sudo mkdir -p /opt/homebrew/opt/
+          sudo ln -sf /usr/local/opt/openssl@1.1 /opt/homebrew/opt/openssl@1.1
+          echo "ls -l /opt/homebrew/opt/openssl@1.1"; ls -l /opt/homebrew/opt/openssl@1.1
+          make libs
+        working-directory: ${{ github.workspace }}/src/github.com/intelchain-itc/intelchain
+
+      - name: Build itc binary for macos-latest x86_64
+        if: matrix.os == 'macos-latest'
+        run: |
+          make all
+          mv dist/itc dist/itc-darwin-x86_64
+        working-directory: itc-sdk
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: itc
+          path: ${{ github.workspace }}/itc-sdk/dist/*
+          retention-days: 1
+
+  # build-arm64:
+  #   name: Build itc binary
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ [ self-hosted,linux,ARM64 ] ]
+
+  #   steps:
+
+  #     - name: Set up Go 1.16.5
+  #       uses: actions/setup-go@v2
+  #       with:
+  #         go-version: 1.16.5
+
+
+  #     - name: Checkout itc code
+  #       uses: actions/checkout@v2
+  #       with:
+  #         path: go/src/github.com/intelchain-itc/itc-sdk
+
+  #     - name: Debug
+  #       run: |
+  #         pwd
+  #         echo ${HOME}
+  #         echo ${GITHUB_WORKSPACE}
+  #         echo ${GOPATH}
+  #         echo ${GOROOT}
+  #       env:
+  #         GOPATH: /home/ubuntu/actions-runner/_work/itc-sdk/itc-sdk/go
+
+  #     - name: Checkout dependence repo
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: intelchain-itc/mcl
+  #         path: go/src/github.com/intelchain-itc/mcl
+  #       env:
+  #         GOPATH: /home/ubuntu/actions-runner/_work/itc-sdk/itc-sdk/go
+
+  #     - name: Checkout dependence repo
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: intelchain-itc/bls
+  #         path: go/src/github.com/intelchain-itc/bls
+  #       env:
+  #         GOPATH: /home/ubuntu/actions-runner/_work/itc-sdk/itc-sdk/go
+
+  #     - name: Checkout dependence code
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: intelchain-itc/intelchain
+  #         path: go/src/github.com/intelchain-itc/intelchain
+  #         ref: main
+  #         fetch-depth: 0
+  #       env:
+  #         GOPATH: /home/ubuntu/actions-runner/_work/itc-sdk/itc-sdk/go
+
+  #     - name: Build itc binary for Arm
+  #       run: |
+  #         make static
+  #         mv dist/itc dist/itc-arm64
+  #         chmod +x dist/itc-arm64
+  #       working-directory: /home/ubuntu/actions-runner/_work/itc-sdk/itc-sdk/go/src/github.com/intelchain-itc/itc-sdk
+  #       env:
+  #         GOPATH: /home/ubuntu/actions-runner/_work/itc-sdk/itc-sdk/go
+
+  #     - name: Upload artifact
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: itc-arm64
+  #         path: /home/ubuntu/actions-runner/_work/itc-sdk/itc-sdk/go/src/github.com/intelchain-itc/itc-sdk/dist/*
+  #         retention-days: 1
+  #       env:
+  #         GOPATH: /home/ubuntu/actions-runner/_work/itc-sdk/itc-sdk/go
+
+  release-page:
+    name: Sign binary and create and publish release page
+    needs: [ build-x86_64 ]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v3
+        with:
+          gpg-private-key: ${{ secrets.ITC_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.ITC_GPG_PRIVATE_KEY_PASS }}
+
+      - name: Checkout itc core code
+        uses: actions/checkout@v3
+        with:
+          path: itc-sdk
+
+      - name: Get latest version
+        run: |
+          VERSION=$(git tag -l --sort=-v:refname | head -n 1 | tr -d v)
+          VERSION_LONG=$(git describe --always --long --dirty)
+          RELEASE=$(git describe --long | cut -f2 -d-)
+          echo "build_version=$VERSION" >> $GITHUB_ENV
+          echo "build_version_long=$VERSION_LONG" >> $GITHUB_ENV
+          echo "build_release=$RELEASE" >> $GITHUB_ENV
+        working-directory: itc-sdk
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: itc
+
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Signed darwin x86_64 itc binary
+        run: |
+          gpg --detach-sign itc-darwin-x86_64
+          sha256sum itc-darwin-x86_64 >> itc-darwin-x86_64.sha256
+
+      - name: Get tag message
+        env:
+          TAG_SHA: ${{ github.event.after }}
+        run: |
+          touch ./tag_message.md
+          echo -e "$TAG_SHA\n\nThe released version: $build_version_long" >> ./tag_message.md
+        working-directory: itc-sdk
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Mainnet Release ${{ env.build_version }}
+          draft: true
+          prerelease: false
+          body_path: ${{ github.workspace }}/itc-sdk/tag_message.md
+
+      - name: Upload itc binary for Linux (x86_64)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./itc
+          asset_name: itc
+          asset_content_type: application/octet-stream
+
+      - name: Upload itc binary darwin-x86_64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./itc-darwin-x86_64
+          asset_name: itc-darwin-x86_64
+          asset_content_type: application/octet-stream
+
+
+      # - name: Upload itc binary for ARM64
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     GOPATH: /home/runner/work/itc-sdk/itc-sdk/go
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ./itc-arm64
+      #     asset_name: itc-arm64
+      #     asset_content_type: application/octet-stream
+
+      # - name: Upload sha256 signature of itc arm64 binary
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ./itc-arm64.sha256
+      #     asset_name: itc-arm64.sha256
+      #     asset_content_type: text/plain
+
+      # - name: Upload gpg signature of itc arm64 binary
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ./itc-arm64.sig
+      #     asset_name: itc-arm64.sig
+      #     asset_content_type: application/octet-stream

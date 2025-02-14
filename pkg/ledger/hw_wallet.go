@@ -13,9 +13,9 @@ import (
 
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/intelchain-itc/go-sdk/pkg/address"
 	"github.com/intelchain-itc/intelchain/core/types"
 	staking "github.com/intelchain-itc/intelchain/staking/types"
+	"github.com/intelchain-itc/itc-sdk/pkg/address"
 )
 
 var (

@@ -17,12 +17,12 @@ import (
 	"strings"
 
 	bls_core "github.com/intelchain-itc/bls/ffi/go/bls"
-	"github.com/intelchain-itc/go-sdk/pkg/common"
-	"github.com/intelchain-itc/go-sdk/pkg/sharding"
-	"github.com/intelchain-itc/go-sdk/pkg/validation"
 	"github.com/intelchain-itc/intelchain/crypto/bls"
 	"github.com/intelchain-itc/intelchain/crypto/hash"
 	"github.com/intelchain-itc/intelchain/staking/types"
+	"github.com/intelchain-itc/itc-sdk/pkg/common"
+	"github.com/intelchain-itc/itc-sdk/pkg/sharding"
+	"github.com/intelchain-itc/itc-sdk/pkg/validation"
 	"golang.org/x/crypto/ssh/terminal"
 )
 

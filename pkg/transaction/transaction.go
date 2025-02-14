@@ -3,10 +3,10 @@ package transaction
 import (
 	"math/big"
 
-	"github.com/intelchain-itc/go-sdk/pkg/address"
-	"github.com/intelchain-itc/go-sdk/pkg/rpc"
 	"github.com/intelchain-itc/intelchain/core/types"
 	"github.com/intelchain-itc/intelchain/numeric"
+	"github.com/intelchain-itc/itc-sdk/pkg/address"
+	"github.com/intelchain-itc/itc-sdk/pkg/rpc"
 )
 
 // NewTransaction - create a new Transaction based on supplied params

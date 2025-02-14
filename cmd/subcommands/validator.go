@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/intelchain-itc/go-sdk/pkg/rpc"
+	"github.com/intelchain-itc/itc-sdk/pkg/rpc"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )

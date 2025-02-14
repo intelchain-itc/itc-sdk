@@ -8,7 +8,7 @@ import (
 
 	"github.com/valyala/fasthttp"
 
-	"github.com/intelchain-itc/go-sdk/pkg/common"
+	"github.com/intelchain-itc/itc-sdk/pkg/common"
 )
 
 var (

@@ -9,20 +9,20 @@ import (
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/intelchain-itc/go-sdk/pkg/address"
-	"github.com/intelchain-itc/go-sdk/pkg/common"
-	"github.com/intelchain-itc/go-sdk/pkg/ledger"
-	"github.com/intelchain-itc/go-sdk/pkg/rpc"
 	"github.com/intelchain-itc/intelchain/accounts"
 	"github.com/intelchain-itc/intelchain/accounts/keystore"
 	"github.com/intelchain-itc/intelchain/common/denominations"
 	"github.com/intelchain-itc/intelchain/core/types"
 	"github.com/intelchain-itc/intelchain/numeric"
+	"github.com/intelchain-itc/itc-sdk/pkg/address"
+	"github.com/intelchain-itc/itc-sdk/pkg/common"
+	"github.com/intelchain-itc/itc-sdk/pkg/ledger"
+	"github.com/intelchain-itc/itc-sdk/pkg/rpc"
 )
 
 var (
-	nanoAsDec = numeric.NewDec(denominations.Ticks)
-	oneAsDec  = numeric.NewDec(denominations.Itc)
+	ticksAsDec = numeric.NewDec(denominations.Ticks)
+	itcAsDec   = numeric.NewDec(denominations.Itc)
 
 	// ErrBadTransactionParam is returned when invalid params are given to the
 	// controller upon execution of a transaction.
@@ -155,7 +155,7 @@ func (C *Controller) setGasPrice(gasPrice numeric.Dec) {
 		})
 		return
 	}
-	C.transactionForRPC.params["gas-price"] = gasPrice.Mul(nanoAsDec)
+	C.transactionForRPC.params["gas-price"] = gasPrice.Mul(ticksAsDec)
 }
 
 func (C *Controller) setAmount(amount numeric.Dec) {
@@ -176,8 +176,8 @@ func (C *Controller) setAmount(amount numeric.Dec) {
 
 	gasAsDec := C.transactionForRPC.params["gas-price"].(numeric.Dec)
 	gasAsDec = gasAsDec.Mul(numeric.NewDec(int64(C.transactionForRPC.params["gas-limit"].(uint64))))
-	balanceInTick := amount.Mul(oneAsDec)
-	total := balanceInTick.Add(gasAsDec)
+	amountInAtto := amount.Mul(itcAsDec)
+	total := amountInAtto.Add(gasAsDec)
 
 	if !C.Behavior.OfflineSign {
 		balanceRPCReply, err := C.messenger.SendRPC(
@@ -192,7 +192,7 @@ func (C *Controller) setAmount(amount numeric.Dec) {
 		bal, _ := new(big.Int).SetString(currentBalance[2:], 16)
 		balance := numeric.NewDecFromBigInt(bal)
 		if total.GT(balance) {
-			balanceInItc := balance.Quo(oneAsDec)
+			balanceInItc := balance.Quo(itcAsDec)
 			C.executionError = ErrBadTransactionParam
 			errorMsg := fmt.Sprintf(
 				"insufficient balance of %s in shard %d for the requested transfer of %s",
@@ -205,7 +205,8 @@ func (C *Controller) setAmount(amount numeric.Dec) {
 			return
 		}
 	}
-	C.transactionForRPC.params["transfer-amount"] = balanceInTick
+
+	C.transactionForRPC.params["transfer-amount"] = amountInAtto
 }
 
 func (C *Controller) setReceiver(receiver *string) {

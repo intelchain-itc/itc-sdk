@@ -10,15 +10,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/intelchain-itc/go-sdk/pkg/address"
-	"github.com/intelchain-itc/go-sdk/pkg/common"
-	"github.com/intelchain-itc/go-sdk/pkg/rpc"
-	"github.com/intelchain-itc/go-sdk/pkg/sharding"
-	"github.com/intelchain-itc/go-sdk/pkg/store"
-	"github.com/intelchain-itc/go-sdk/pkg/transaction"
-	"github.com/intelchain-itc/go-sdk/pkg/validation"
 	"github.com/intelchain-itc/intelchain/accounts"
 	"github.com/intelchain-itc/intelchain/core"
+	"github.com/intelchain-itc/itc-sdk/pkg/address"
+	"github.com/intelchain-itc/itc-sdk/pkg/common"
+	"github.com/intelchain-itc/itc-sdk/pkg/rpc"
+	"github.com/intelchain-itc/itc-sdk/pkg/sharding"
+	"github.com/intelchain-itc/itc-sdk/pkg/store"
+	"github.com/intelchain-itc/itc-sdk/pkg/transaction"
+	"github.com/intelchain-itc/itc-sdk/pkg/validation"
 
 	"github.com/spf13/cobra"
 )
@@ -42,7 +42,6 @@ var (
 	transferFileFlags []transferFlags
 	timeout           uint32
 	timeFormat        = "2006-01-02 15:04:05.000000"
-	data              string
 )
 
 type transactionLog struct {
@@ -170,11 +169,6 @@ func handlerForTransaction(txLog *transactionLog) error {
 		gLimit = uint64(tempLimit)
 	}
 
-	dataByte, err := transaction.StringToByte(data)
-	if err != nil {
-		return handlerForError(txLog, err)
-	}
-
 	addr := toAddress.String()
 
 	txLog.TimeSigned = time.Now().UTC().Format(timeFormat) // Approximate time of signature
@@ -183,7 +177,7 @@ func handlerForTransaction(txLog *transactionLog) error {
 		&addr,
 		fromShardID, toShardID,
 		amt, gPrice,
-		dataByte,
+		[]byte{},
 	)
 
 	if dryRun {
@@ -342,7 +336,7 @@ func init() {
 		Short: "Create and send a transaction",
 		Args:  cobra.ExactArgs(0),
 		Long: `
-Create a transaction, sign it, and send off to the Intelchain blockchain
+Create a transaction, sign it, and send off to the intelchain blockchain
 `,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if offlineSign {
@@ -420,7 +414,6 @@ Create a transaction, sign it, and send off to the Intelchain blockchain
 	cmdTransfer.Flags().StringVar(&inputNonce, "nonce", "", "set nonce for tx")
 	cmdTransfer.Flags().Uint32Var(&fromShardID, "from-shard", 0, "source shard id")
 	cmdTransfer.Flags().Uint32Var(&toShardID, "to-shard", 0, "target shard id")
-	cmdTransfer.Flags().StringVar(&data, "data", "", "transaction data")
 	cmdTransfer.Flags().StringVar(&targetChain, "chain-id", "", "what chain ID to target")
 	cmdTransfer.Flags().Uint32Var(&timeout, "timeout", defaultTimeout, "set timeout in seconds. Set to 0 to not wait for confirm")
 	cmdTransfer.Flags().BoolVar(&userProvidesPassphrase, "passphrase", false, ppPrompt)
@@ -456,7 +449,7 @@ Get Nonce From a Account
 		Short: "Send a Offline Signed transaction",
 		Args:  cobra.ExactArgs(0),
 		Long: `
-Send a offline signed transaction to the Intelchain blockchain
+Send a offline signed to the intelchain blockchain
 `,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if givenFilePath == "" {

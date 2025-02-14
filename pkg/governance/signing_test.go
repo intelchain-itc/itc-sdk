@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/btcsuite/btcd/btcec"
-	"github.com/intelchain-itc/go-sdk/pkg/common"
 	"github.com/intelchain-itc/intelchain/accounts"
+	"github.com/intelchain-itc/itc-sdk/pkg/common"
 )
 
 func TestSigning(t *testing.T) {

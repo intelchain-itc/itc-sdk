@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/intelchain-itc/go-sdk/pkg/store"
 	"github.com/intelchain-itc/intelchain/accounts"
+	"github.com/intelchain-itc/itc-sdk/pkg/store"
 )
 
 var (

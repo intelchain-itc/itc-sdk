@@ -10,7 +10,7 @@ const (
 	itcDocsDir             = "itc-docs"
 	defaultNodeAddr        = "http://localhost:9500"
 	defaultRpcPrefix       = "itc"
-	defaultMainnetEndpoint = "https://mainnet.intelchain.network/"
+	defaultMainnetEndpoint = "https://testnet.intelchain.network/"
 )
 
 var (

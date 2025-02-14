@@ -10,13 +10,6 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rlp"
 	bls_core "github.com/intelchain-itc/bls/ffi/go/bls"
-	"github.com/intelchain-itc/go-sdk/pkg/address"
-	"github.com/intelchain-itc/go-sdk/pkg/common"
-	"github.com/intelchain-itc/go-sdk/pkg/keys"
-	"github.com/intelchain-itc/go-sdk/pkg/ledger"
-	"github.com/intelchain-itc/go-sdk/pkg/rpc"
-	"github.com/intelchain-itc/go-sdk/pkg/store"
-	"github.com/intelchain-itc/go-sdk/pkg/transaction"
 	"github.com/intelchain-itc/intelchain/accounts"
 	"github.com/intelchain-itc/intelchain/accounts/keystore"
 	"github.com/intelchain-itc/intelchain/common/denominations"
@@ -26,6 +19,13 @@ import (
 	"github.com/intelchain-itc/intelchain/shard"
 	"github.com/intelchain-itc/intelchain/staking/effective"
 	staking "github.com/intelchain-itc/intelchain/staking/types"
+	"github.com/intelchain-itc/itc-sdk/pkg/address"
+	"github.com/intelchain-itc/itc-sdk/pkg/common"
+	"github.com/intelchain-itc/itc-sdk/pkg/keys"
+	"github.com/intelchain-itc/itc-sdk/pkg/ledger"
+	"github.com/intelchain-itc/itc-sdk/pkg/rpc"
+	"github.com/intelchain-itc/itc-sdk/pkg/store"
+	"github.com/intelchain-itc/itc-sdk/pkg/transaction"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -58,7 +58,7 @@ var (
 	validatorAddress          itcAddress
 	stakingAmount             string
 	active                    string
-	oneAsDec                  = numeric.NewDec(denominations.Itc)
+	itcAsDec                  = numeric.NewDec(denominations.Itc)
 	nanoAsDec                 = numeric.NewDec(denominations.Ticks)
 )
 
@@ -200,13 +200,13 @@ func confirmTx(networkHandler *rpc.HTTPMessenger, confirmWaitTime uint32, txHash
 }
 
 func delegationAmountSanityCheck(minSelfDelegation *numeric.Dec, maxTotalDelegation *numeric.Dec, amount *numeric.Dec) error {
-	// MinSelfDelegation must be >= 1 ONE
-	if minSelfDelegation != nil && minSelfDelegation.LT(oneAsDec) {
+	// MinSelfDelegation must be >= 1 ITC
+	if minSelfDelegation != nil && minSelfDelegation.LT(itcAsDec) {
 		return errMinSelfDelegationTooSmall
 	}
 
 	// MaxTotalDelegation must be a
-	if maxTotalDelegation != nil && maxTotalDelegation.LT(oneAsDec) {
+	if maxTotalDelegation != nil && maxTotalDelegation.LT(itcAsDec) {
 		return errMaxTotalDelegationTooSmall
 	}
 
@@ -370,9 +370,9 @@ Create a new validator"
 				return e2
 			}
 
-			amt = amt.Mul(oneAsDec)
-			minSelfDel = minSelfDel.Mul(oneAsDec)
-			maxTotalDel = maxTotalDel.Mul(oneAsDec)
+			amt = amt.Mul(itcAsDec)
+			minSelfDel = minSelfDel.Mul(itcAsDec)
+			maxTotalDel = maxTotalDel.Mul(itcAsDec)
 
 			err = delegationAmountSanityCheck(&minSelfDel, &maxTotalDel, &amt)
 			if err != nil {
@@ -536,7 +536,7 @@ Create a new validator"
 				if err != nil {
 					return err
 				}
-				amount = amount.Mul(oneAsDec)
+				amount = amount.Mul(itcAsDec)
 				minSelfDel = &amount
 				mSelDel = amount.RoundInt()
 			}
@@ -548,7 +548,7 @@ Create a new validator"
 				if err != nil {
 					return err
 				}
-				amount = amount.Mul(oneAsDec)
+				amount = amount.Mul(itcAsDec)
 				maxTotalDel = &amount
 				mTotalDel = amount.RoundInt()
 			}
@@ -663,7 +663,7 @@ Delegating to a validator
 
 			delegateStakePayloadMaker := func() (staking.Directive, interface{}) {
 				amt, _ := common.NewDecFromString(stakingAmount)
-				amt = amt.Mul(oneAsDec)
+				amt = amt.Mul(itcAsDec)
 
 				return staking.DirectiveDelegate, staking.Delegate{
 					address.Parse(delegatorAddress.String()),
@@ -730,7 +730,7 @@ Delegating to a validator
 
 			delegateStakePayloadMaker := func() (staking.Directive, interface{}) {
 				amt, _ := common.NewDecFromString(stakingAmount)
-				amt = amt.Mul(oneAsDec)
+				amt = amt.Mul(itcAsDec)
 
 				return staking.DirectiveUndelegate, staking.Undelegate{
 					address.Parse(delegatorAddress.String()),
@@ -846,7 +846,7 @@ func init() {
 		Use:   "staking",
 		Short: "newvalidator, editvalidator, delegate, undelegate or redelegate",
 		Long: `
-Create a staking transaction, sign it, and send off to the Intelchain blockchain
+Create a staking transaction, sign it, and send off to the intelchain blockchain
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.Help()

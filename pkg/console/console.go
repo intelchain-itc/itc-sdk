@@ -18,17 +18,17 @@ import (
 	"time"
 
 	ethereum_rpc "github.com/ethereum/go-ethereum/rpc"
-	"github.com/intelchain-itc/go-sdk/pkg/account"
-	"github.com/intelchain-itc/go-sdk/pkg/address"
-	"github.com/intelchain-itc/go-sdk/pkg/common"
-	"github.com/intelchain-itc/go-sdk/pkg/console/jsre"
-	"github.com/intelchain-itc/go-sdk/pkg/console/jsre/deps"
-	"github.com/intelchain-itc/go-sdk/pkg/console/prompt"
-	"github.com/intelchain-itc/go-sdk/pkg/console/web3ext"
-	"github.com/intelchain-itc/go-sdk/pkg/rpc"
-	"github.com/intelchain-itc/go-sdk/pkg/store"
-	"github.com/intelchain-itc/go-sdk/pkg/transaction"
 	"github.com/intelchain-itc/intelchain/accounts"
+	"github.com/intelchain-itc/itc-sdk/pkg/account"
+	"github.com/intelchain-itc/itc-sdk/pkg/address"
+	"github.com/intelchain-itc/itc-sdk/pkg/common"
+	"github.com/intelchain-itc/itc-sdk/pkg/console/jsre"
+	"github.com/intelchain-itc/itc-sdk/pkg/console/jsre/deps"
+	"github.com/intelchain-itc/itc-sdk/pkg/console/prompt"
+	"github.com/intelchain-itc/itc-sdk/pkg/console/web3ext"
+	"github.com/intelchain-itc/itc-sdk/pkg/rpc"
+	"github.com/intelchain-itc/itc-sdk/pkg/store"
+	"github.com/intelchain-itc/itc-sdk/pkg/transaction"
 
 	"github.com/dop251/goja"
 	"github.com/mattn/go-colorable"
@@ -554,10 +554,6 @@ func (b *bridge) ItcSignTransaction(call jsre.Call) (goja.Value, error) {
 	gasLimit := getStringFromJsObjWithDefault(txObj, "gas", "1000000")
 	amount := getStringFromJsObjWithDefault(txObj, "value", "0")
 	gasPrice := getStringFromJsObjWithDefault(txObj, "gasPrice", "1")
-	input, err := transaction.StringToByte(getStringFromJsObjWithDefault(txObj, "data", ""))
-	if err != nil {
-		return nil, err
-	}
 
 	networkHandler := rpc.NewHTTPHandler(b.console.nodeUrl)
 	chanId, err := common.StringToChainID(b.console.net)
@@ -603,7 +599,7 @@ func (b *bridge) ItcSignTransaction(call jsre.Call) (goja.Value, error) {
 		toP,
 		uint32(b.console.shardId), uint32(b.console.shardId),
 		amt, gPrice,
-		input,
+		[]byte{},
 	)
 	if err != nil {
 		return nil, err
@@ -640,10 +636,6 @@ func (b *bridge) ItcSendTransaction(call jsre.Call) (goja.Value, error) {
 	gasLimit := getStringFromJsObjWithDefault(txObj, "gas", "1000000")
 	amount := getStringFromJsObjWithDefault(txObj, "value", "0")
 	gasPrice := getStringFromJsObjWithDefault(txObj, "gasPrice", "1")
-	input, err := transaction.StringToByte(getStringFromJsObjWithDefault(txObj, "data", ""))
-	if err != nil {
-		return nil, err
-	}
 
 	networkHandler := rpc.NewHTTPHandler(b.console.nodeUrl)
 	chanId, err := common.StringToChainID(b.console.net)
@@ -689,7 +681,7 @@ func (b *bridge) ItcSendTransaction(call jsre.Call) (goja.Value, error) {
 		toP,
 		uint32(b.console.shardId), uint32(b.console.shardId),
 		amt, gPrice,
-		input,
+		[]byte{},
 	)
 	if err != nil {
 		return nil, err

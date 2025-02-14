@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/intelchain-itc/go-sdk/pkg/rpc"
+	"github.com/intelchain-itc/itc-sdk/pkg/rpc"
 	"github.com/spf13/cobra"
 )
 

@@ -7,11 +7,11 @@ import (
 	"path"
 	"time"
 
-	"github.com/intelchain-itc/go-sdk/pkg/address"
-	"github.com/intelchain-itc/go-sdk/pkg/common"
-	c "github.com/intelchain-itc/go-sdk/pkg/common"
 	"github.com/intelchain-itc/intelchain/accounts"
 	"github.com/intelchain-itc/intelchain/accounts/keystore"
+	"github.com/intelchain-itc/itc-sdk/pkg/address"
+	"github.com/intelchain-itc/itc-sdk/pkg/common"
+	c "github.com/intelchain-itc/itc-sdk/pkg/common"
 	"github.com/pkg/errors"
 
 	homedir "github.com/mitchellh/go-homedir"

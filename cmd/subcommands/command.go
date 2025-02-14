@@ -6,9 +6,9 @@ import (
 	"path"
 
 	ethereum_rpc "github.com/ethereum/go-ethereum/rpc"
-	"github.com/intelchain-itc/go-sdk/pkg/common"
-	"github.com/intelchain-itc/go-sdk/pkg/console"
-	"github.com/intelchain-itc/go-sdk/pkg/rpc"
+	"github.com/intelchain-itc/itc-sdk/pkg/common"
+	"github.com/intelchain-itc/itc-sdk/pkg/console"
+	"github.com/intelchain-itc/itc-sdk/pkg/rpc"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 )

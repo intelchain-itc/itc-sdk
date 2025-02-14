@@ -10,15 +10,15 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/intelchain-itc/go-sdk/pkg/address"
+	"github.com/intelchain-itc/itc-sdk/pkg/address"
 
 	color "github.com/fatih/color"
-	"github.com/intelchain-itc/go-sdk/pkg/common"
-	"github.com/intelchain-itc/go-sdk/pkg/rpc"
-	rpcEth "github.com/intelchain-itc/go-sdk/pkg/rpc/eth"
-	rpcV1 "github.com/intelchain-itc/go-sdk/pkg/rpc/v1"
-	"github.com/intelchain-itc/go-sdk/pkg/sharding"
-	"github.com/intelchain-itc/go-sdk/pkg/store"
+	"github.com/intelchain-itc/itc-sdk/pkg/common"
+	"github.com/intelchain-itc/itc-sdk/pkg/rpc"
+	rpcEth "github.com/intelchain-itc/itc-sdk/pkg/rpc/eth"
+	rpcV1 "github.com/intelchain-itc/itc-sdk/pkg/rpc/v1"
+	"github.com/intelchain-itc/itc-sdk/pkg/sharding"
+	"github.com/intelchain-itc/itc-sdk/pkg/store"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/cobra/doc"
@@ -33,7 +33,7 @@ var (
 	rpcPrefix       string
 	keyStoreDir     string
 	givenFilePath   string
-	endpoint        = regexp.MustCompile(`https://api\.s[0-9]\..*\.hmny\.io`)
+	endpoint        = regexp.MustCompile(`https://testnet\.s[0-9]\..*\.intelchain\.network`)
 	request         = func(method string, params []interface{}) error {
 		if !noLatest {
 			params = append(params, "latest")
@@ -53,7 +53,7 @@ var (
 	// RootCmd is single entry point of the CLI
 	RootCmd = &cobra.Command{
 		Use:          "itc",
-		Short:        "Intelchain blockchain",
+		Short:        "intelchain blockchain",
 		SilenceUsage: true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			if verbose {
@@ -96,7 +96,7 @@ var (
 					}
 				} else if endpoint.Match([]byte(node)) {
 					chainName = endpointToChainID(node)
-				} else if strings.Contains(node, "api.intelchain.org") {
+				} else if strings.Contains(node, "mainnet.s0.intelchain.network") {
 					chainName = chainIDWrapper{chainID: &common.Chain.MainNet}
 				} else {
 					chainName = chainIDWrapper{chainID: &common.Chain.TestNet}
@@ -112,7 +112,7 @@ var (
 			return nil
 		},
 		Long: fmt.Sprintf(`
-CLI interface to the Intelchain blockchain
+CLI interface to the intelchain blockchain
 
 %s`, g("Invoke 'itc cookbook' for examples of the most common, important usages")),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -139,19 +139,19 @@ func init() {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var docNode, docNet string
 			if node == defaultNodeAddr || chainName.chainID == &common.Chain.MainNet {
-				docNode = `https://mainnet.intelchain.network`
+				docNode = `https://testnet.intelchain.network`
 				docNet = `Mainnet`
 			} else if chainName.chainID == &common.Chain.TestNet {
-				docNode = `https://testnet.intelchain.org`
+				docNode = `https://testnet.intelchain.network`
 				docNet = `Long-Running Testnet`
 			} else if chainName.chainID == &common.Chain.PangaeaNet {
-				docNode = `https://api.s0.os.intelcchain.network`
+				docNode = `https://testnet.intelchain.network`
 				docNet = `Open Staking Network`
 			} else if chainName.chainID == &common.Chain.PartnerNet {
-				docNode = `https://api.s0.ps.intelcchain.network`
+				docNode = `https://testnet.intelchain.network`
 				docNet = `Partner Testnet`
 			} else if chainName.chainID == &common.Chain.StressNet {
-				docNode = `https://api.s0.stn.intelcchain.network`
+				docNode = `https://testnet.intelchain.network`
 				docNet = `Stress Testing Network`
 			}
 			fmt.Print(strings.ReplaceAll(strings.ReplaceAll(cookbookDoc, `[NODE]`, docNode), `[NETWORK]`, docNet))
@@ -177,7 +177,7 @@ var (
 	// VersionWrapDump meant to be set from main.go
 	VersionWrapDump = ""
 	cookbook        = color.GreenString("itc cookbook")
-	versionLink     = "https://intelchain.org/itc_cli_ver"
+	versionLink     = "https://intelchain.org/itccli_ver"
 	versionFormat   = regexp.MustCompile("v[0-9]+-[a-z0-9]{7}")
 )
 

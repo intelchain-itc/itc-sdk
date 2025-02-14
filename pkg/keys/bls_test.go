@@ -48,8 +48,8 @@ func TestMultiBlsKeyGeneration(t *testing.T) {
 		filePath string
 		expected bool
 	}{
-		{node: "https://testnet.intelchain.org", count: 3, shardID: 0, expected: true},
-		{node: "https://testnet.intelchain.org", count: 3, shardID: 4, expected: false},
+		{node: "https://testnet.intelchain.network", count: 3, shardID: 0, expected: true},
+		{node: "https://testnet.intelchain.network", count: 3, shardID: 4, expected: false},
 	}
 
 	for _, test := range tests {

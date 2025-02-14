@@ -3,7 +3,7 @@ package v1
 import (
 	"fmt"
 
-	rpcCommon "github.com/intelchain-itc/go-sdk/pkg/rpc/common"
+	rpcCommon "github.com/intelchain-itc/itc-sdk/pkg/rpc/common"
 )
 
 const (

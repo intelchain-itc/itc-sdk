@@ -6,9 +6,9 @@ import (
 	"net"
 	"strings"
 
-	"github.com/intelchain-itc/go-sdk/pkg/common"
-	"github.com/intelchain-itc/go-sdk/pkg/rpc"
-	"github.com/intelchain-itc/go-sdk/pkg/sharding"
+	"github.com/intelchain-itc/itc-sdk/pkg/common"
+	"github.com/intelchain-itc/itc-sdk/pkg/rpc"
+	"github.com/intelchain-itc/itc-sdk/pkg/sharding"
 	"github.com/spf13/cobra"
 )
 
@@ -31,7 +31,7 @@ func init() {
 				}
 				balance, _ := balanceRPCReply["result"].(string)
 				bln := common.NewDecFromHex(balance)
-				bln = bln.Quo(oneAsDec)
+				bln = bln.Quo(itcAsDec)
 				var out bytes.Buffer
 				out.WriteString("[")
 				out.WriteString(fmt.Sprintf(`{"shard":%d, "amount":%s}`,

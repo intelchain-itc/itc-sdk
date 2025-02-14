@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/intelchain-itc/go-sdk/pkg/common"
-	"github.com/intelchain-itc/go-sdk/pkg/rpc"
+	"github.com/intelchain-itc/itc-sdk/pkg/common"
+	"github.com/intelchain-itc/itc-sdk/pkg/rpc"
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +40,7 @@ Look up information about delegation
 
 	cmdBlockchain := &cobra.Command{
 		Use:   "blockchain",
-		Short: "Interact with the intelchain.org Blockchain",
+		Short: "Interact with the Intelchain Blockchain",
 		Long: `
 Query Intelchain's blockchain for completed transaction, historic records
 `,

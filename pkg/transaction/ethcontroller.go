@@ -7,13 +7,13 @@ import (
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/intelchain-itc/go-sdk/pkg/address"
-	"github.com/intelchain-itc/go-sdk/pkg/common"
-	"github.com/intelchain-itc/go-sdk/pkg/rpc"
 	"github.com/intelchain-itc/intelchain/accounts"
 	"github.com/intelchain-itc/intelchain/accounts/keystore"
 	"github.com/intelchain-itc/intelchain/core/types"
 	"github.com/intelchain-itc/intelchain/numeric"
+	"github.com/intelchain-itc/itc-sdk/pkg/address"
+	"github.com/intelchain-itc/itc-sdk/pkg/common"
+	"github.com/intelchain-itc/itc-sdk/pkg/rpc"
 )
 
 type ethTransactionForRPC struct {
@@ -116,7 +116,7 @@ func (C *EthController) setGasPrice(gasPrice numeric.Dec) {
 		})
 		return
 	}
-	C.transactionForRPC.params["gas-price"] = gasPrice.Mul(nanoAsDec)
+	C.transactionForRPC.params["gas-price"] = gasPrice.Mul(ticksAsDec)
 }
 
 func (C *EthController) setAmount(amount numeric.Dec) {
@@ -134,39 +134,36 @@ func (C *EthController) setAmount(amount numeric.Dec) {
 		})
 		return
 	}
-
+	balanceRPCReply, err := C.messenger.SendRPC(
+		rpc.Method.GetBalance,
+		p{address.ToBech32(C.sender.account.Address), "latest"},
+	)
+	if err != nil {
+		C.executionError = err
+		return
+	}
+	currentBalance, _ := balanceRPCReply["result"].(string)
+	bal, _ := new(big.Int).SetString(currentBalance[2:], 16)
+	balance := numeric.NewDecFromBigInt(bal)
 	gasAsDec := C.transactionForRPC.params["gas-price"].(numeric.Dec)
 	gasAsDec = gasAsDec.Mul(numeric.NewDec(int64(C.transactionForRPC.params["gas-limit"].(uint64))))
-	balanceInTick := amount.Mul(oneAsDec)
-	total := balanceInTick.Add(gasAsDec)
+	amountInAtto := amount.Mul(itcAsDec)
+	total := amountInAtto.Add(gasAsDec)
 
-	if !C.Behavior.OfflineSign {
-		balanceRPCReply, err := C.messenger.SendRPC(
-			rpc.Method.GetBalance,
-			p{address.ToBech32(C.sender.account.Address), "latest"},
+	if total.GT(balance) {
+		balanceInItc := balance.Quo(itcAsDec)
+		C.executionError = ErrBadTransactionParam
+		errorMsg := fmt.Sprintf(
+			"insufficient balance of %s in shard %d for the requested transfer of %s",
+			balanceInItc.String(), C.transactionForRPC.params["from-shard"].(uint32), amount.String(),
 		)
-		if err != nil {
-			C.executionError = err
-			return
-		}
-		currentBalance, _ := balanceRPCReply["result"].(string)
-		bal, _ := new(big.Int).SetString(currentBalance[2:], 16)
-		balance := numeric.NewDecFromBigInt(bal)
-		if total.GT(balance) {
-			balanceInItc := balance.Quo(oneAsDec)
-			C.executionError = ErrBadTransactionParam
-			errorMsg := fmt.Sprintf(
-				"insufficient balance of %s in shard %d for the requested transfer of %s",
-				balanceInItc.String(), C.transactionForRPC.params["from-shard"].(uint32), amount.String(),
-			)
-			C.transactionErrors = append(C.transactionErrors, &Error{
-				ErrMessage:           &errorMsg,
-				TimestampOfRejection: time.Now().Unix(),
-			})
-			return
-		}
+		C.transactionErrors = append(C.transactionErrors, &Error{
+			ErrMessage:           &errorMsg,
+			TimestampOfRejection: time.Now().Unix(),
+		})
+		return
 	}
-	C.transactionForRPC.params["transfer-amount"] = balanceInTick
+	C.transactionForRPC.params["transfer-amount"] = amountInAtto
 }
 
 func (C *EthController) setReceiver(receiver string) {
@@ -307,10 +304,4 @@ func (C *EthController) ExecuteEthTransaction(
 	return C.executionError
 }
 
-func (C *EthController) ExecuteRawTransaction(txn string) error {
-	C.transactionForRPC.signature = &txn
-
-	C.sendSignedTx()
-	C.txConfirmation()
-	return C.executionError
-}
+// TODO: add logic to create staking transactions in the SDK.

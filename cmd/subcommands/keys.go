@@ -13,13 +13,13 @@ import (
 	"github.com/tyler-smith/go-bip39"
 	"golang.org/x/crypto/ssh/terminal"
 
-	"github.com/intelchain-itc/go-sdk/pkg/account"
-	c "github.com/intelchain-itc/go-sdk/pkg/common"
-	"github.com/intelchain-itc/go-sdk/pkg/keys"
-	"github.com/intelchain-itc/go-sdk/pkg/ledger"
-	"github.com/intelchain-itc/go-sdk/pkg/mnemonic"
-	"github.com/intelchain-itc/go-sdk/pkg/store"
-	"github.com/intelchain-itc/go-sdk/pkg/validation"
+	"github.com/intelchain-itc/itc-sdk/pkg/account"
+	c "github.com/intelchain-itc/itc-sdk/pkg/common"
+	"github.com/intelchain-itc/itc-sdk/pkg/keys"
+	"github.com/intelchain-itc/itc-sdk/pkg/ledger"
+	"github.com/intelchain-itc/itc-sdk/pkg/mnemonic"
+	"github.com/intelchain-itc/itc-sdk/pkg/store"
+	"github.com/intelchain-itc/itc-sdk/pkg/validation"
 )
 
 const (
@@ -36,8 +36,6 @@ var (
 	blsFilePath            string
 	blsShardID             uint32
 	blsCount               uint32
-	coinType               uint32 // coin type used for key path derivation BIP-44 (1023 default for Intelchain; 60 for Ethereum or for Metamask mnemonics)
-	keyIndex               uint32
 	ppPrompt               = fmt.Sprintf(
 		"prompt for passphrase, otherwise use default passphrase: \"`%s`\"", c.DefaultPassphrase,
 	)
@@ -164,7 +162,7 @@ func keysSub() []*cobra.Command {
 				fmt.Println(acc.Mnemonic)
 			}
 			addr, _ := store.AddressFromAccountName(acc.Name)
-			fmt.Printf("itc address: %s\n", addr)
+			fmt.Printf("ITC Address: %s\n", addr)
 			return nil
 		},
 	}
@@ -216,24 +214,18 @@ func keysSub() []*cobra.Command {
 			if !bip39.IsMnemonicValid(m) {
 				return mnemonic.InvalidMnemonic
 			}
-
 			acc.Mnemonic = m
-			acc.CoinType = &coinType
-			acc.HdIndexNumber = &keyIndex
-
 			if err := account.CreateNewLocalAccount(&acc); err != nil {
 				return err
 			}
 			fmt.Println("Successfully recovered account from mnemonic!")
 			addr, _ := store.AddressFromAccountName(acc.Name)
-			fmt.Printf("itc address: %s\n", addr)
+			fmt.Printf("ITC Address: %s\n", addr)
 			return nil
 		},
 	}
 	cmdRecoverMnemonic.Flags().BoolVar(&userProvidesPassphrase, "passphrase", false, ppPrompt)
 	cmdRecoverMnemonic.Flags().StringVar(&passphraseFilePath, "passphrase-file", "", "path to a file containing the passphrase")
-	cmdRecoverMnemonic.Flags().Uint32Var(&coinType, "coin-type", 1023, "coin type used for key path derivation (1023 default for Intelchain; 60 for Ethereum or for Metamask mnemonics)")
-	cmdRecoverMnemonic.Flags().Uint32Var(&keyIndex, "index", 0, "index of the key recovered from the provided mnemonic")
 
 	cmdImportKS := &cobra.Command{
 		Use:   "import-ks <KEYSTORE_FILE_PATH> [ACCOUNT_NAME]",
@@ -252,7 +244,7 @@ func keysSub() []*cobra.Command {
 			if !quietImport && err == nil {
 				fmt.Printf("Imported keystore given account alias of `%s`\n", name)
 				addr, _ := store.AddressFromAccountName(name)
-				fmt.Printf("itc address: %s\n", addr)
+				fmt.Printf("ITC Address: %s\n", addr)
 			}
 			return err
 		},
@@ -278,7 +270,7 @@ func keysSub() []*cobra.Command {
 			if !quietImport && err == nil {
 				fmt.Printf("Imported keystore given account alias of `%s`\n", name)
 				addr, _ := store.AddressFromAccountName(name)
-				fmt.Printf("itc address: %s\n", addr)
+				fmt.Printf("ITC Address: %s\n", addr)
 			}
 			return err
 		},
@@ -349,7 +341,7 @@ func keysSub() []*cobra.Command {
 		Short: "Generates multiple bls keys for a given shard network configuration and then encrypts and saves the private key with a requested passphrase",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := validation.ValidateNodeConnection(node); err != nil {
-				fmt.Fprintf(os.Stderr, "Cannot connect to node %v, using Intelchain mainnet endpoint %v\n",
+				fmt.Fprintf(os.Stderr, "Cannot connect to node %v, using intelchain mainnet endpoint %v\n",
 					node, defaultMainnetEndpoint)
 				node = defaultMainnetEndpoint
 			}

@@ -11,7 +11,7 @@ Options:
    -d          download all the binaries
    -h          print this help
 Note: Arguments must be passed at the end for ./itc to work correctly.
-For instance: ./itc.sh balances <itc-address> --node=https://testnet.intelchain.org/
+For instance: ./itc.sh balances <itc-address> --node=https://testnet.intelchain.network/
 
 EOT
 }

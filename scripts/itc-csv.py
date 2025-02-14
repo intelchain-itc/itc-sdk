@@ -9,10 +9,10 @@ Due to a possible Nonce mismatch, it is recommended to NOT have 1 'from' address
 appear in multiple CSV files that are ran at the same time.
 
 Example:
-    ./itc-csv.py /path/to/csv/file.csv --node https://mainnet.intelchain.network/
-    ./itc-csv.py /path/to/csv/file.csv --fast -n https://mainnet.intelchain.network/
-    ./itc-csv.py /path/to/csv/file.csv --fast --use-default-passphrase --yes -n https://mainnet.intelchain.network/
-    ./itc-csv.py /path/to/csv/file.csv --fast --use-default-passphrase --yes --batch-size 100 -n https://mainnet.intelchain.network/
+    ./itc-csv.py /path/to/csv/file.csv --node https://testnet.intelchain.network/
+    ./itc-csv.py /path/to/csv/file.csv --fast -n https://testnet.intelchain.network/
+    ./itc-csv.py /path/to/csv/file.csv --fast --use-default-passphrase --yes -n https://testnet.intelchain.network/
+    ./itc-csv.py /path/to/csv/file.csv --fast --use-default-passphrase --yes --batch-size 100 -n https://testnet.intelchain.network/
 
 Sample CSV file:
     https://docs.google.com/spreadsheets/d/1nkF8N16S3y28cn7SM1cYJca8lzHPOzyR42S1V-OOAeQ/edit?usp=sharing
@@ -21,7 +21,7 @@ For detail help message:
     ./itc-csv.py --help
 
 Install with:
-    curl -O https://raw.githubusercontent.com/intelchain-itc/go-sdk/master/scripts/itc-csv.py && chmod +x itc-csv.py
+    curl -O https://raw.githubusercontent.com/intelchain-itc/itc-sdk/master/scripts/itc-csv.py && chmod +x itc-csv.py
 """
 import sys
 import time
@@ -275,8 +275,8 @@ def _parse_args():
     """
     parser = argparse.ArgumentParser(description='Intelchain CLI, transaction from CSV file wrapper script.')
     parser.add_argument("path", type=str, help="The path to the CSV file.")
-    parser.add_argument("--node", "-n", dest="node", default="https://mainnet.intelchain.network/", type=str,
-                        help="The node or endpoint to send the transactions to, default: 'https://mainnet.intelchain.network/'.")
+    parser.add_argument("--node", "-n", dest="node", default="https://testnet.intelchain.network/", type=str,
+                        help="The node or endpoint to send the transactions to, default: 'https://testnet.intelchain.network/'.")
     parser.add_argument("--batch-size", dest="batch_size", default=4, type=int,
                         help="Number of transactions to send in 1 batch to the CLI before checking output, default: 4")
     parser.add_argument("--timeout-per-tx", dest="timeout_per_tx", default=40, type=int,

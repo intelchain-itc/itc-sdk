@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	ethCommon "github.com/ethereum/go-ethereum/common"
-	"github.com/intelchain-itc/go-sdk/pkg/address"
 	"github.com/intelchain-itc/intelchain/accounts/keystore"
+	"github.com/intelchain-itc/itc-sdk/pkg/address"
 
 	// "github.com/ethereum/go-ethereum/crypto"
 

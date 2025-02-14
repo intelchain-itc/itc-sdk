@@ -5,16 +5,30 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/intelchain-itc/go-sdk/pkg/common"
-	"github.com/intelchain-itc/go-sdk/pkg/rpc"
 	"github.com/intelchain-itc/intelchain/common/denominations"
 	"github.com/intelchain-itc/intelchain/numeric"
+	"github.com/intelchain-itc/itc-sdk/pkg/common"
+	"github.com/intelchain-itc/itc-sdk/pkg/rpc"
 )
 
 var (
-	nanoAsDec = numeric.NewDec(denominations.Ticks)
-	oneAsDec  = numeric.NewDec(denominations.Itc)
+	ticksAsDec = numeric.NewDec(denominations.Ticks)
+	itcAsDec   = numeric.NewDec(denominations.Itc)
+
+	localToPublicEndpoints = map[string]string{
+		"http://127.0.0.1:9500": "https://testnet.intelchain.network",
+		"http://127.0.0.1:9502": "https://testnet.s1.intelchain.network",
+		"ws://127.0.0.1:9800":   "wss://testnet.s0.intelchain.network/ws",
+		"ws://127.0.0.1:9802":   "wss://testnet.s1.intelchain.network/ws",
+	}
 )
+
+func rewriteEndpoint(endpoint string) string {
+	if newEndpoint, exists := localToPublicEndpoints[endpoint]; exists {
+		return newEndpoint
+	}
+	return endpoint
+}
 
 // RPCRoutes reflects the RPC endpoints of the target network across shards
 type RPCRoutes struct {
@@ -36,6 +50,13 @@ func Structure(node string) ([]RPCRoutes, error) {
 	if err := json.Unmarshal(p, &result); err != nil {
 		return nil, err
 	}
+
+	// Add this new section to rewrite the endpoints
+	for i := range result.Result {
+		result.Result[i].HTTP = rewriteEndpoint(result.Result[i].HTTP)
+		result.Result[i].WS = rewriteEndpoint(result.Result[i].WS)
+	}
+
 	return result.Result, nil
 }
 
@@ -60,7 +81,7 @@ func CheckAllShards(node, itcAddr string, noPretty bool) (string, error) {
 		}
 		balance, _ := balanceRPCReply["result"].(string)
 		bln := common.NewDecFromHex(balance)
-		bln = bln.Quo(oneAsDec)
+		bln = bln.Quo(itcAsDec)
 		out.WriteString(fmt.Sprintf(`{"shard":%d, "amount":%s}`,
 			shard.ShardID,
 			bln.String(),

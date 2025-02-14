@@ -3,18 +3,18 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/intelchain-itc/go-sdk/pkg/governance"
-	"github.com/intelchain-itc/go-sdk/pkg/store"
 	"github.com/intelchain-itc/intelchain/accounts"
+	"github.com/intelchain-itc/itc-sdk/pkg/governance"
+	"github.com/intelchain-itc/itc-sdk/pkg/store"
 	"github.com/spf13/cobra"
 )
 
 func init() {
 	cmdGovernance := &cobra.Command{
 		Use:   "governance",
-		Short: "Interact with the Intelchain spaces on https://snapshot.org",
+		Short: "Interact with the intelchain spaces on https://snapshot.org",
 		Long: `
-Support interaction with the Intelchain governance space on Snapshot, especially for validators that do not want to import their account private key into either metamask or onewallet.
+Support interaction with the intelchain governance space on Snapshot, especially for validators that do not want to import their account private key into either metamask or itcwallet.
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.Help()

@@ -3,7 +3,7 @@ package account
 import (
 	"testing"
 
-	"github.com/intelchain-itc/go-sdk/pkg/store"
+	"github.com/intelchain-itc/itc-sdk/pkg/store"
 )
 
 func TestAccountGetsRemoved(t *testing.T) {

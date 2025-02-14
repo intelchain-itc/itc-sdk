@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/intelchain-itc/go-sdk/pkg/rpc"
+	"github.com/intelchain-itc/itc-sdk/pkg/rpc"
 )
 
 var (

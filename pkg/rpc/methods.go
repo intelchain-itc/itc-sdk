@@ -3,8 +3,8 @@ package rpc
 import (
 	"fmt"
 
-	rpcCommon "github.com/intelchain-itc/go-sdk/pkg/rpc/common"
-	rpcV1 "github.com/intelchain-itc/go-sdk/pkg/rpc/v1"
+	rpcCommon "github.com/intelchain-itc/itc-sdk/pkg/rpc/common"
+	rpcV1 "github.com/intelchain-itc/itc-sdk/pkg/rpc/v1"
 	"github.com/pkg/errors"
 )
 

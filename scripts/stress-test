@@ -4,12 +4,12 @@ set -ieu
 
 source ../intelchain/scripts/setup_bls_build_flags.sh
 
-sender=''
-receiver=''
-shard_zero='https://testnet.intelchain.org/'
-shard_one='https://testnet.intelchain.org/'
+sender='itc17jknjqzzzqwxr6dq95syyahzqx9apjca4rhhff'
+receiver='itc1yvhj85pr9nat6g0cwtd9mqhaj3whpgwwyacn6l'
+shard_zero='https://testnet.intelchain.network/'
+shard_one='https://testnet.intelchain.network/'
 
-direct_node='http://52.27.34.100:9500'
+direct_node='http://39.127.77.16:9500'
 
 function c {
     printf "%s\n" "$*" | bc

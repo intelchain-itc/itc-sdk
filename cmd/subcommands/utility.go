@@ -7,9 +7,9 @@ import (
 	"strings"
 
 	bls_core "github.com/intelchain-itc/bls/ffi/go/bls"
-	"github.com/intelchain-itc/go-sdk/pkg/address"
-	"github.com/intelchain-itc/go-sdk/pkg/rpc"
 	"github.com/intelchain-itc/intelchain/crypto/bls"
+	"github.com/intelchain-itc/itc-sdk/pkg/address"
+	"github.com/intelchain-itc/itc-sdk/pkg/rpc"
 	"github.com/spf13/cobra"
 )
 

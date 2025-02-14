@@ -3,7 +3,7 @@ package validation
 import (
 	"testing"
 
-	"github.com/intelchain-itc/go-sdk/pkg/sharding"
+	"github.com/intelchain-itc/itc-sdk/pkg/sharding"
 )
 
 func TestIsValidAddress(t *testing.T) {
@@ -11,8 +11,8 @@ func TestIsValidAddress(t *testing.T) {
 		str string
 		exp bool
 	}{
-		{"", true},
-		{"0x7c41E0668B551f4f902cFaec05B5Bdca68b124CE", true},
+		{"itc1yvhj85pr9nat6g0cwtd9mqhaj3whpgwwyacn6l", true},
+		{"itc17jknjqzzzqwxr6dq95syyahzqx9apjca4rhhff", true},
 		{"itcfoofoo", false},
 		{"0xbarbar", false},
 		{"dsasdadsasaadsas", false},

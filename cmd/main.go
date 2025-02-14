@@ -5,9 +5,9 @@ import (
 	"os"
 	"path"
 
-	cmd "github.com/intelchain-itc/go-sdk/cmd/subcommands"
+	cmd "github.com/intelchain-itc/itc-sdk/cmd/subcommands"
 	// Need this side effect
-	_ "github.com/intelchain-itc/go-sdk/pkg/store"
+	_ "github.com/intelchain-itc/itc-sdk/pkg/store"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +29,7 @@ func main() {
 		Short: "Show version",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Fprintf(os.Stderr,
-				"Intelchain (C) 2020. %v, version %v-%v (%v %v)\n",
+				"Intelchain (C) 2024. %v, version %v-%v (%v %v)\n",
 				path.Base(os.Args[0]), version, commit, builtBy, builtAt)
 			os.Exit(0)
 			return nil
