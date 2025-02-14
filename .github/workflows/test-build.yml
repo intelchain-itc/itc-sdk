@@ -65,6 +65,10 @@ jobs:
           echo ${GOPATH}
           echo ${GOROOT}
           ls ${{ github.workspace }}/src/github.com/intelchain-itc/
+          
+      - name: Check OpenSSL version
+        run: |
+         openssl version -a
 
       - name: Build itc binary for linux ubuntu
         if: matrix.os == 'ubuntu-22.04'
