@@ -37,7 +37,7 @@ Examples:
 ./itc --node=https://testnet.intelchain.networkbalances <SOME_ITC_ADDRESS>
 
 2.  Check sent transaction
-./itc --node=https://testnet.intelchain.networkblockchain transaction-by-hash <SOME_TX_HASH>
+./itc --node=https://testnet.intelchain.network blockchain transaction-by-hash <SOME_TX_HASH>
 
 3.  List local account keys
 ./itc keys list
@@ -48,11 +48,11 @@ Examples:
     --from-shard 0 --to-shard 1 --amount 200 --passphrase
 
 5.  Sending a batch of transactions as dictated from a file (the `--dry-run` options still apply)
-./itc --node=https://testnet.intelchain.networktransfer --file <PATH_TO_JSON_FILE>
+./itc --node=https://testnet.intelchain.network transfer --file <PATH_TO_JSON_FILE>
 Check README for details on json file format.
 
 6.  Check a completed transaction receipt
-./itc --node=https://testnet.intelchain.networkblockchain transaction-receipt <SOME_TX_HASH>
+./itc --node=https://testnet.intelchain.network blockchain transaction-receipt <SOME_TX_HASH>
 
 7.  Import an account using the mnemonic. Prompts the user to give the mnemonic.
 ./itc keys recover-from-mnemonic <ACCOUNT_NAME>
@@ -70,43 +70,43 @@ Check README for details on json file format.
 ./itc keys generate-bls-key --bls-file-path <PATH_FOR_BLS_KEY_FILE>
 
 12. Create a new validator with a list of BLS keys
-./itc --node=https://testnet.intelchain.networkstaking create-validator --amount 10 --validator-addr <SOME_ITC_ADDRESS> \
+./itc --node=https://testnet.intelchain.network staking create-validator --amount 10 --validator-addr <SOME_ITC_ADDRESS> \
     --bls-pubkeys <BLS_KEY_1>,<BLS_KEY_2>,<BLS_KEY_3> \
     --identity foo --details bar --name baz --max-change-rate 0.1 --max-rate 0.1 --max-total-delegation 10 \
     --min-self-delegation 10 --rate 0.1 --security-contact Leo  --website intelchain.org --passphrase
 
 13. Edit an existing validator
-./itc --node=https://testnet.intelchain.networkstaking edit-validator \
+./itc --node=https://testnet.intelchain.network staking edit-validator \
     --validator-addr <SOME_ITC_ADDRESS> --identity foo --details bar \
     --name baz --security-contact EK --website intelchain.org \
     --min-self-delegation 0 --max-total-delegation 10 --rate 0.1\
     --add-bls-key <SOME_BLS_KEY> --remove-bls-key <OTHER_BLS_KEY> --passphrase
 
 14. Delegate an amount to a validator
-./itc --node=https://testnet.intelchain.networkstaking delegate \
+./itc --node=https://testnet.intelchain.network staking delegate \
     --delegator-addr <SOME_ITC_ADDRESS> --validator-addr <VALIDATOR_ITC_ADDRESS> \
     --amount 10 --passphrase
 
 15. Undelegate to a validator
-./itc --node=https://testnet.intelchain.networkstaking undelegate \
+./itc --node=https://testnet.intelchain.network staking undelegate \
     --delegator-addr <SOME_ITC_ADDRESS> --validator-addr <VALIDATOR_ITC_ADDRESS> \
     --amount 10 --passphrase
 
 16. Collect block rewards as a delegator
-./itc --node=https://testnet.intelchain.networkstaking collect-rewards \
+./itc --node=https://testnet.intelchain.network staking collect-rewards \
     --delegator-addr <SOME_ITC_ADDRESS> --passphrase
 
 17. Check elected validators
-./itc --node=https://testnet.intelchain.networkblockchain validator elected
+./itc --node=https://testnet.intelchain.network blockchain validator elected
 
 18. Get current staking utility metrics
-./itc --node=https://testnet.intelchain.networkblockchain utility-metrics
+./itc --node=https://testnet.intelchain.network blockchain utility-metrics
 
 19. Check in-memory record of failed staking transactions
-./itc --node=https://testnet.intelchain.networkfailures staking
+./itc --node=https://testnet.intelchain.network failures staking
 
 20. Check which shard your BLS public key would be assigned to as a validator
-./itc --node=https://testnet.intelchain.networkutility shard-for-bls <BLS_PUBLIC_KEY>
+./itc --node=https://testnet.intelchain.network utility shard-for-bls <BLS_PUBLIC_KEY>
 
 21. Vote on a governance proposal on https://snapshot.org
 ./itc governance vote-proposal --space=[intelchain-mainnet.eth] \
