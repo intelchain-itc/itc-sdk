@@ -76,10 +76,28 @@ jobs:
       - name: Install Dependencies (Ubuntu)
         if: matrix.os == 'ubuntu-22.04'
         run: |
-            sudo apt-get update
-            sudo apt-get remove -y openssl libssl-dev
+            # Show held packages, if any
+            sudo apt-mark showhold
+            sudo apt-mark unhold openssl ca-certificates
+        
+             # Clean apt cache and update package list
+            sudo apt-get clean
+            sudo apt-get update --fix-missing
+        
+            # Install OpenSSL 1.1 specifically
             sudo apt-get install -y libssl1.1 libssl-dev g++ make ca-certificates
-            sudo apt-get install -y openssl # Ensure OpenSSL 1.1.1 or higher is installed
+        
+            # Reinstall OpenSSL and ca-certificates to ensure proper version
+            sudo apt-get install --reinstall openssl
+            sudo apt-get install --reinstall ca-certificates
+        
+            # Install any remaining dependencies
+            sudo apt-get install -f
+        
+
+
+
+
 
       - name: Build itc binary for linux ubuntu
         if: matrix.os == 'ubuntu-22.04'
@@ -97,7 +115,7 @@ jobs:
           # echo "ls -l /opt/homebrew/opt/openssl@3"; ls -l /opt/homebrew/opt/openssl@3
 
           
-          brew uninstall openssl@3
+          brew uninstall --ignore-dependencies openssl@3
           brew install openssl@1.1
           sudo mkdir -p /opt/homebrew/opt/
           sudo ln -sf /usr/local/opt/openssl@1.1 /opt/homebrew/opt/openssl@1.1
