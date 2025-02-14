@@ -70,6 +70,12 @@ jobs:
         run: |
          openssl version -a
 
+      - name: Install Dependencies (Ubuntu)
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libssl-dev g++ make
+
       - name: Build itc binary for linux ubuntu
         if: matrix.os == 'ubuntu-22.04'
         run: |
@@ -79,11 +85,21 @@ jobs:
       - name: Build libs for macos-latest
         if: matrix.os == 'macos-latest'
         run: |
-          brew install gmp
-          brew install openssl
-          sudo mkdir -p /opt/homebrew/opt/
-          sudo ln -sf /usr/local/opt/openssl@1.1 /opt/homebrew/opt/openssl@1.1
-          echo "ls -l /opt/homebrew/opt/openssl@1.1"; ls -l /opt/homebrew/opt/openssl@1.1
+          # brew install gmp
+          # brew install openssl
+          # sudo mkdir -p /opt/homebrew/opt/
+          # sudo ln -sf /usr/local/opt/openssl@1.1 /opt/homebrew/opt/openssl@1.1
+          # echo "ls -l /opt/homebrew/opt/openssl@1.1"; ls -l /opt/homebrew/opt/openssl@1.1
+          brew update
+          brew install gmp openssl@3
+          mkdir -p /usr/local/opt/openssl
+          sudo ln -sf /usr/local/opt/openssl@3 /usr/local/opt/openssl
+          export OPENSSL_ROOT_DIR=$(brew --prefix openssl@3)
+          echo "OPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR" >> $GITHUB_ENV
+          echo "Path:"
+          ls -l /usr/local/opt/openssl
+          echo "Brew Installed OpenSSL Version:"
+          openssl version -a
           make libs
         working-directory: ${{ github.workspace }}/src/github.com/intelchain-itc/intelchain
 
