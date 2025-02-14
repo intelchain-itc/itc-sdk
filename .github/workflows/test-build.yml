@@ -39,7 +39,7 @@ jobs:
           path: ${{ github.workspace }}/src/github.com/intelchain-itc/bls
 
       - name: Checkout dependence code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: intelchain-itc/intelchain
           path: ${{ github.workspace }}/src/github.com/intelchain-itc/intelchain
