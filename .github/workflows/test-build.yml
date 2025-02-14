@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout itc code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: itc-sdk
 
@@ -27,13 +27,13 @@ jobs:
           go-version-file: itc-sdk/go.mod
 
       - name: Checkout dependence repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: intelchain-itc/mcl
           path: ${{ github.workspace }}/src/github.com/intelchain-itc/mcl
 
       - name: Checkout dependence repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: intelchain-itc/bls
           path: ${{ github.workspace }}/src/github.com/intelchain-itc/bls
