@@ -2,6 +2,7 @@ SHELL := /bin/bash
 TOP:=$(realpath ..)
 export LD_LIBRARY_PATH:=$(TOP)/bls/lib:$(TOP)/mcl/lib:/usr/local/opt/openssl/lib:/opt/homebrew/opt/gmp/lib/:/opt/homebrew/opt/openssl/lib
 export LIBRARY_PATH:=$(LD_LIBRARY_PATH)
+export CXXFLAGS += -Wno-deprecated-declarations  
 version := $(shell git rev-list --count HEAD)
 commit := $(shell git describe --always --long --dirty)
 built_at := $(shell date +%FT%T%z)
