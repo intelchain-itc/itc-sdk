@@ -22,9 +22,12 @@ jobs:
           path: itc-sdk
 
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v4
         with:
           go-version-file: itc-sdk/go.mod
+          
+      - name: Wait for setup to finish
+        run: sleep 5
 
       - name: Checkout dependence repo
         uses: actions/checkout@v4
@@ -73,9 +76,10 @@ jobs:
       - name: Install Dependencies (Ubuntu)
         if: matrix.os == 'ubuntu-22.04'
         run: |
-           sudo apt-get update
-           sudo apt-get remove -y openssl libssl-dev
-           sudo apt-get install -y libssl1.1 libssl-dev g++ make ca-certificates
+            sudo apt-get update
+            sudo apt-get remove -y openssl libssl-dev
+            sudo apt-get install -y libssl1.1 libssl-dev g++ make ca-certificates
+            sudo apt-get install -y openssl # Ensure OpenSSL 1.1.1 or higher is installed
 
       - name: Build itc binary for linux ubuntu
         if: matrix.os == 'ubuntu-22.04'
