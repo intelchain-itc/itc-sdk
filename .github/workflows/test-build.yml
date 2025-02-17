@@ -86,16 +86,23 @@ jobs:
         run: |
           # Uninstall OpenSSL version 3 if installed
           sudo apt-get remove --purge -y openssl libssl-dev || true
-          # Install OpenSSL version 1.1 from available repositories
+          
+          # Try installing OpenSSL 1.1 from alternative sources
+          sudo add-apt-repository ppa:ondrej/openjdk
           sudo apt-get update
-          sudo apt-get install -y openssl=1.1* libssl-dev=1.1* || true
-          # If OpenSSL 1.1 installation fails, try to install OpenSSL 1.1 from alternative source
+          sudo apt-get install -y openssl=1.1.1f-1ubuntu2.1~18.04.2 libssl-dev=1.1.1f-1ubuntu2.1~18.04.2 || true
+          
+          # If OpenSSL 1.1 is not found, attempt manual installation
           if ! dpkg -l | grep openssl; then
             echo "OpenSSL 1.1 not found, attempting manual installation"
-            sudo add-apt-repository ppa:ubuntu-security/ppa
-            sudo apt-get update
-            sudo apt-get install -y openssl=1.1.1f-1ubuntu2.1~18.04.2 libssl-dev=1.1.1f-1ubuntu2.1~18.04.2
+            wget https://www.openssl.org/source/openssl-1.1.1l.tar.gz
+            tar -xzvf openssl-1.1.1l.tar.gz
+            cd openssl-1.1.1l
+            ./config
+            make
+            sudo make install
           fi
+
           # Verify OpenSSL version
           openssl version
 
@@ -116,6 +123,7 @@ jobs:
           # echo "ls -l /opt/homebrew/opt/openssl@3"; ls -l /opt/homebrew/opt/openssl@3
 
           # Uninstall OpenSSL version 3 if installed
+          brew uninstall --ignore-dependencies openssl@3
           brew uninstall openssl@3 || true
           brew install openssl@1.1
           sudo mkdir -p /opt/homebrew/opt/
