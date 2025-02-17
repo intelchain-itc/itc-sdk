@@ -81,22 +81,24 @@ jobs:
       #       sudo apt-get update
       #       sudo apt-get install -y openssl libssl-dev
       #       openssl version
-      - name: Check OpenSSL version
-        run: |
-         openssl version -a
-
       - name: Install Dependencies (Ubuntu)
         if: matrix.os == 'ubuntu-22.04'
         run: |
           # Uninstall OpenSSL version 3 if installed
           sudo apt-get remove --purge -y openssl libssl-dev || true
-
-          # Install OpenSSL version 1.1
+          # Install OpenSSL version 1.1 from available repositories
           sudo apt-get update
-          sudo apt-get install -y openssl=1.1* libssl-dev=1.1*
-          
+          sudo apt-get install -y openssl=1.1* libssl-dev=1.1* || true
+          # If OpenSSL 1.1 installation fails, try to install OpenSSL 1.1 from alternative source
+          if ! dpkg -l | grep openssl; then
+            echo "OpenSSL 1.1 not found, attempting manual installation"
+            sudo add-apt-repository ppa:ubuntu-security/ppa
+            sudo apt-get update
+            sudo apt-get install -y openssl=1.1.1f-1ubuntu2.1~18.04.2 libssl-dev=1.1.1f-1ubuntu2.1~18.04.2
+          fi
           # Verify OpenSSL version
           openssl version
+
 
       - name: Build itc binary for linux ubuntu
         if: matrix.os == 'ubuntu-22.04'
