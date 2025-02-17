@@ -125,7 +125,10 @@ jobs:
           # Uninstall OpenSSL version 3 if installed
           brew uninstall --ignore-dependencies openssl@3
           brew uninstall openssl@3 || true
+           
           brew install openssl@1.1
+          brew link gmp --force
+          brew link openssl@1.1 --force
           sudo mkdir -p /opt/homebrew/opt/
           sudo ln -sf /usr/local/opt/openssl@1.1 /opt/homebrew/opt/openssl@1.1
           echo "ls -l /opt/homebrew/opt/openssl@1.1"; ls -l /opt/homebrew/opt/openssl@1.1
