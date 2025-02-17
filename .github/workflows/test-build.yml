@@ -33,12 +33,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: intelchain-itc/mcl
+          token: ${{ secrets.GH_PAT }}
           path: ${{ github.workspace }}/src/github.com/intelchain-itc/mcl
 
       - name: Checkout dependence repo
         uses: actions/checkout@v4
         with:
           repository: intelchain-itc/bls
+          token: ${{ secrets.GH_PAT }}
           path: ${{ github.workspace }}/src/github.com/intelchain-itc/bls
 
       - name: Checkout dependence code
@@ -46,7 +48,7 @@ jobs:
         with:
           repository: intelchain-itc/intelchain
           token: ${{ secrets.GH_PAT }}
-          ref: main
+          ref: dev
           path: ${{ github.workspace }}/src/github.com/intelchain-itc/intelchain
           # ref: main
           # fetch-depth: 0
