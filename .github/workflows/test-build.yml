@@ -71,41 +71,17 @@ jobs:
           echo ${GOROOT}
           ls ${{ github.workspace }}/src/github.com/intelchain-itc/
           
-      # - name: Check OpenSSL version
-      #   run: |
-      #    openssl version -a
+      - name: Check OpenSSL version
+        run: |
+         openssl version -a
 
-      # - name: Install Dependencies (Ubuntu)
-      #   if: matrix.os == 'ubuntu-22.04'
-      #   run: |
-      #       sudo apt-get update
-      #       sudo apt-get install -y openssl libssl-dev
-      #       openssl version
       - name: Install Dependencies (Ubuntu)
         if: matrix.os == 'ubuntu-22.04'
         run: |
-          # Uninstall OpenSSL version 3 if installed
-          sudo apt-get remove --purge -y openssl libssl-dev || true
-          
-          # Try installing OpenSSL 1.1 from alternative sources
-          sudo add-apt-repository ppa:ondrej/openjdk
-          sudo apt-get update
-          sudo apt-get install -y openssl=1.1.1f-1ubuntu2.1~18.04.2 libssl-dev=1.1.1f-1ubuntu2.1~18.04.2 || true
-          
-          # If OpenSSL 1.1 is not found, attempt manual installation
-          if ! dpkg -l | grep openssl; then
-            echo "OpenSSL 1.1 not found, attempting manual installation"
-            wget https://www.openssl.org/source/openssl-1.1.1l.tar.gz
-            tar -xzvf openssl-1.1.1l.tar.gz
-            cd openssl-1.1.1l
-            ./config
-            make
-            sudo make install
-          fi
-
-          # Verify OpenSSL version
-          openssl version
-
+            sudo apt-get update
+            sudo apt-get install -y openssl libssl-dev
+            openssl version -a
+    
 
       - name: Build itc binary for linux ubuntu
         if: matrix.os == 'ubuntu-22.04'
@@ -127,8 +103,6 @@ jobs:
           brew uninstall openssl@3 || true
            
           brew install openssl@1.1
-          brew link gmp --force
-          brew link openssl@1.1 --force
           sudo mkdir -p /opt/homebrew/opt/
           sudo ln -sf /usr/local/opt/openssl@1.1 /opt/homebrew/opt/openssl@1.1
           echo "ls -l /opt/homebrew/opt/openssl@1.1"; ls -l /opt/homebrew/opt/openssl@1.1
